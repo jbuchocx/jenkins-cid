@@ -17,7 +17,7 @@ pipeline {
         stage('Fetch Open PRs') {
             steps {
                 script {
-                    String emailMessage = 'Open PRs Report:\n----------------\n'
+                    String emailMessage = '<h3>Open PRs Report:<br>-----------------------</h3>'
 
                     REPOSITORIES.each { repo ->
                         println "Fetching open PRs for: ${repo}"
@@ -25,7 +25,7 @@ pipeline {
                         def response = gitlib.githubRequest(url: "repos/${repo}/pulls", mode: 'GET')
                         def jsonResponse = readJSON text: response.content
 
-                        String repoMessage = "Repository: ${repo}\n"
+                        String repoMessage = "<b>Repository: ${repo}</b><br>"
 
                         if (jsonResponse.size() > 0) {
                             String activePrsMsg = ''
@@ -34,20 +34,20 @@ pipeline {
                             jsonResponse.each { pr ->
                                 if (!pr.draft) {
                                     if (activePrsMsg.isEmpty()) {
-                                        activePrsMsg = 'Open PRs: \n'
+                                        activePrsMsg = 'Open PRs: <br>'
                                     }
                                     echo "PR: #${pr.number} - ${pr.title} \n(${pr.html_url})"
-                                    activePrsMsg += "#${pr.number} - ${pr.title} \n(${pr.html_url})\n"
+                                    activePrsMsg += "#${pr.number} - ${pr.title} <br>(${pr.html_url})<br>"
                                 } else {
                                     if (draftsMsg.isEmpty()) {
-                                        draftsMsg = 'Drafts:\n'
+                                        draftsMsg = 'Drafts:<br>'
                                     }
-                                    draftsMsg += "#${pr.number} - ${pr.title} \n(${pr.html_url})\n"
+                                    draftsMsg += "#${pr.number} - ${pr.title} <br>(${pr.html_url})<br>"
                                 }
                             }
 
                             if (!activePrsMsg.isEmpty() && !draftsMsg.isEmpty()) {
-                                repoMessage += activePrsMsg + '\n' + draftsMsg
+                                repoMessage += activePrsMsg + '<br>' + draftsMsg
                             } else if (!activePrsMsg.isEmpty()) {
                                 repoMessage += activePrsMsg
                             } else if (!draftsMsg.isEmpty()) {
@@ -55,10 +55,10 @@ pipeline {
                             }
                         } else {
                             echo "No open PRs found for ${repo}"
-                            repoMessage += 'No open PRs.\n'
+                            repoMessage += 'No open PRs.<br>'
                         }
 
-                        emailMessage += repoMessage + '\n'
+                        emailMessage += repoMessage + '<br>'
                     }
 
                     println "Email Message:\n${emailMessage}"
@@ -72,12 +72,11 @@ pipeline {
 void sendEmailWithPRs( String message) {
     def dateToday = new Date().format('dd-MM-yyyy')
     def subject = "Daily Open PRs Report: ${dateToday}"
-    def body = message
 
     try{
         emailext(
             subject: subject,
-            body: body,
+            body: message,
             from: 'cid-support@intel.com',
             to: 'jakubx.buchocki@intel.com'
         )
