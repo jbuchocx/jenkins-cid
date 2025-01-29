@@ -20,7 +20,9 @@ pipeline {
                         
                         if (jsonResponse.size() > 0) {
                             jsonResponse.each { pr ->
-                                echo "PR: #${pr.number} - ${pr.title} (${pr.html_url})"
+                                if (!pr.draft) {
+                                    echo "PR: #${pr.number} - ${pr.title} \n(${pr.html_url})"
+                                }
                             }
                         } else {
                             echo "No open PRs found for ${repo}"
