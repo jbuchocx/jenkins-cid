@@ -62,8 +62,26 @@ pipeline {
                     }
 
                     println "Email Message:\n${emailMessage}"
+                    sendEmailWithPRs(emailMessage)
                 }
             }
         }
+    }
+}
+
+void sendEmailWithPRs( String message) {
+    def dateToday = new Date().format('dd-MM-yyyy')
+    def subject = "Daily Open PRs Report: ${dateToday}"
+    def body = message
+
+    try{
+        emailext(
+            subject: subject,
+            body: body,
+            from: 'cid-support@intel.com',
+            to: 'jakubx.buchocki@intel.com'
+        )
+    } catch (Exception e) {
+        println 'FAILED to send an email.'
     }
 }
