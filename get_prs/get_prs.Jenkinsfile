@@ -7,6 +7,7 @@ def REPOSITORIES = [
     'intel-innersource/applications.compilers.ide.vsnet.dpcpp',
     'intel-innersource/applications.compilers.ide.vsnet.dpcppct',
     'intel-innersource/applications.compilers.ide.vsnet.fortran',
+    'intel-innersource/frameworks.ide.visual-studio.extensions.clang-cl-hwpgo',
     'intel-innersource/applications.compilers.ide.vsnet.testing'
 ]
 
