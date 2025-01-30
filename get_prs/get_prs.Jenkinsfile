@@ -35,7 +35,7 @@ pipeline {
                             jsonResponse.each { pr ->
                                 if (!pr.draft) {
                                     if (activePrsMsg.isEmpty()) {
-                                        activePrsMsg = 'Open PRs: <br>'
+                                        activePrsMsg = 'Active PRs: <br>'
                                     }
                                     echo "PR: #${pr.number} - ${pr.title} \n(${pr.html_url})"
                                     activePrsMsg += "#${pr.number} - ${pr.title} <br>(${pr.html_url})<br>"
